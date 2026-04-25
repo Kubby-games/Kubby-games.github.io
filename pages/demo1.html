@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo 1 - KUBBY BIG ADVENTURE</title>
+<link rel="icon" href="../assets/images/icon.svg" type="image/svg+xml">
+<script>
+document.documentElement.classList.add('page-transitions-enabled');
+</script>
+
+<style>
+@font-face {
+    font-family: 'KBF';
+    src: url('../assets/fonts/Kbf Ru.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'KBF';
+    src: url('../assets/fonts/Kbf En.ttf') format('truetype');
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'KBF', sans-serif;
+}
+
+html {
+    min-height: 100%;
+    background: #000;
+}
+
+@keyframes moveBG {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 100%; }
+}
+
+body {
+    min-height: 100vh;
+    position: relative;
+    isolation: isolate;
+    overflow-x: hidden;
+    background: #000;
+    color: #fff;
+    padding: 40px 20px;
+    background-image: url("../assets/images/bbg.png");
+    background-repeat: repeat;
+    background-size: 100px;
+    animation: moveBG 30s ease-in-out infinite alternate;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 999;
+    transition: opacity 0.55s ease;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.95));
+    pointer-events: none;
+    z-index: 0;
+}
+
+.page-shell {
+    position: relative;
+    z-index: 1;
+}
+
+html.page-transitions-enabled body::before {
+    opacity: 1;
+}
+
+html.page-transitions-enabled body .page-shell {
+    opacity: 0;
+    transform: translateY(18px) scale(0.988);
+    transition: opacity 0.5s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html.page-transitions-enabled body.page-ready .page-shell {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+html.page-transitions-enabled body.page-ready::before {
+    opacity: 0;
+}
+
+html.page-transitions-enabled body.page-leaving .page-shell {
+    opacity: 0;
+    transform: translateY(18px) scale(0.988);
+    pointer-events: none;
+}
+
+html.page-transitions-enabled body.page-leaving::before {
+    opacity: 1;
+}
+
+.logo {
+    display: block;
+    margin: 0 auto 35px;
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    transition: transform 0.35s ease, filter 0.35s ease;
+}
+
+.logo:hover {
+    transform: translateY(-4px) scale(1.02);
+    filter: drop-shadow(0 0 18px rgba(255,255,255,0.28));
+}
+
+.nav {
+    max-width: 900px;
+    margin: 0 auto 30px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.nav a {
+    position: relative;
+    --ui-shift-x: 0px;
+    --ui-shift-y: 0px;
+    --ui-rotate-x: 0deg;
+    --ui-rotate-y: 0deg;
+    --ui-scale: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 180px;
+    color: #fff;
+    text-decoration: none;
+    padding: 12px 18px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.08);
+    border: 2px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(4px);
+    transform-style: preserve-3d;
+    will-change: transform;
+    transform:
+        perspective(900px)
+        translate3d(var(--ui-shift-x), var(--ui-shift-y), 0)
+        rotateX(var(--ui-rotate-x))
+        rotateY(var(--ui-rotate-y))
+        scale(var(--ui-scale));
+    transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.nav a::after {
+    content: "";
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 6px;
+    height: 14px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0) 74%);
+    opacity: 0.28;
+    transform: translateY(8px) scale(0.9);
+    filter: blur(10px);
+    pointer-events: none;
+    transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.nav a:hover,
+.nav a.is-ui-hovered {
+    background: rgba(255,255,255,0.16);
+    border-color: rgba(255,255,255,0.42);
+    box-shadow: 0 16px 28px rgba(0,0,0,0.28);
+}
+
+.nav a:hover::after,
+.nav a.is-ui-hovered::after {
+    opacity: 0.44;
+    transform: translateY(10px) scale(1);
+}
+
+.nav-link-label {
+    display: inline-block;
+    transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), -10px);
+    transition: transform 0.22s ease, letter-spacing 0.22s ease;
+}
+
+.nav a:hover .nav-link-label,
+.nav a.is-ui-hovered .nav-link-label {
+    transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), -10px) translateY(-1px);
+    letter-spacing: 1px;
+}
+
+.section-title {
+    font-size: 34px;
+    margin-bottom: 18px;
+    text-align: center;
+    color: #fff;
+    letter-spacing: 2px;
+}
+
+[data-depth] {
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+.grid {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 18px;
+}
+
+.card {
+    --ui-shift-x: 0px;
+    --ui-shift-y: 0px;
+    --ui-rotate-x: 0deg;
+    --ui-rotate-y: 0deg;
+    --ui-scale: 1;
+    position: relative;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.2);
+    padding: 16px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    will-change: transform;
+    transform:
+        perspective(900px)
+        translate3d(var(--ui-shift-x), var(--ui-shift-y), 0)
+        rotateX(var(--ui-rotate-x))
+        rotateY(var(--ui-rotate-y))
+        scale(var(--ui-scale));
+    transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    backdrop-filter: blur(4px);
+}
+
+.card::after {
+    content: "";
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 8px;
+    height: 16px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0) 74%);
+    opacity: 0.32;
+    transform: translateY(10px) scale(0.88);
+    filter: blur(10px);
+    pointer-events: none;
+    transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    inset: -35%;
+    background: radial-gradient(circle, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 64%);
+    opacity: 0;
+    transform: scale(0.7);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.card:hover,
+.card.is-ui-hovered {
+    background: rgba(255,255,255,0.15);
+    border-color: #fff;
+    box-shadow: 0 16px 28px rgba(0,0,0,0.32);
+}
+
+.card:hover::before,
+.card.is-ui-hovered::before {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.card:hover::after,
+.card.is-ui-hovered::after {
+    opacity: 0.48;
+    transform: translateY(12px) scale(0.98);
+}
+
+.card-title {
+    position: relative;
+    z-index: 1;
+    font-size: 22px;
+    transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), -10px);
+    transition: letter-spacing 0.25s ease, transform 0.25s ease;
+}
+
+.card:hover .card-title,
+.card.is-ui-hovered .card-title {
+    letter-spacing: 1px;
+    transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), -10px) translateX(4px);
+}
+
+.player {
+    --ui-shift-x: 0px;
+    --ui-shift-y: 0px;
+    --ui-rotate-x: 0deg;
+    --ui-rotate-y: 0deg;
+    --ui-scale: 1;
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.05);
+    padding: 20px;
+    border-radius: 14px;
+    border: 2px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(4px);
+    transform-style: preserve-3d;
+    will-change: transform;
+    transform:
+        perspective(900px)
+        translate3d(var(--ui-shift-x), var(--ui-shift-y), 0)
+        rotateX(var(--ui-rotate-x))
+        rotateY(var(--ui-rotate-y))
+        scale(var(--ui-scale));
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.player::after {
+    content: "";
+    position: absolute;
+    left: 22px;
+    right: 22px;
+    bottom: 10px;
+    height: 18px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0) 74%);
+    opacity: 0.34;
+    transform: translateY(12px) scale(0.9);
+    filter: blur(12px);
+    pointer-events: none;
+    transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.player:hover,
+.player.is-ui-hovered {
+    border-color: rgba(255,255,255,0.34);
+    box-shadow: 0 18px 26px rgba(0,0,0,0.26);
+}
+
+.player:hover::after,
+.player.is-ui-hovered::after {
+    opacity: 0.46;
+    transform: translateY(14px) scale(1);
+}
+
+.track-title {
+    transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), -10px);
+}
+
+.player-controls,
+.player button,
+[id^="seek"] {
+    position: relative;
+    z-index: 1;
+    transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), 10px);
+}
+
+.player-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.player button {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: 2px solid rgba(255,255,255,0.3);
+    color: #fff;
+    font-size: 22px;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.player button:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.08);
+}
+
+[id^="seek"] {
+    flex: 1;
+    height: 8px;
+    cursor: pointer;
+    appearance: none;
+    background: rgba(255,255,255,0.25);
+    border-radius: 4px;
+    outline: none;
+}
+
+[id^="seek"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+}
+
+.track-title {
+    font-size: 22px;
+    text-align: center;
+    margin-bottom: 10px;
+    color: #fff;
+    letter-spacing: 1px;
+}
+</style>
+</head>
+<body>
+<div class="page-shell">
+
+<div class="nav">
+    <a href="../index.html"><span class="nav-link-label" data-depth="-1">Главная</span></a>
+</div>
+
+<img src="../assets/images/Game.png" class="logo" alt="KUBBY BIG ADVENTURE">
+
+<h2 class="section-title">Скачать Demo 1 на..</h2>
+
+<div class="grid">
+    <a href="https://drive.google.com/file/d/1vApynfwjmI_nllVyOCWyqDu2STBu4P32/view?usp=drive_link" class="card" target="_blank" rel="noopener noreferrer">
+        <div class="card-title" data-depth="-1">WINDOWS 64x</div>
+    </a>
+    <a href="https://drive.google.com/file/d/1q7g222gKLC4exzw-lY9TaupMnH9aMFyI/view?usp=drive_link" class="card" target="_blank" rel="noopener noreferrer">
+        <div class="card-title" data-depth="-1">WINDOWS 32x</div>
+    </a>
+    <a href="https://drive.google.com/file/d/12M4OV0V6A-g-dsNtp5wCMk29NjKZgzsK/view?usp=drive_link" class="card" target="_blank" rel="noopener noreferrer">
+        <div class="card-title" data-depth="-1">LINUX</div>
+    </a>
+    <a href="https://drive.google.com/file/d/1dhcLiv-9TzTosBoto-CTFvZHG6QNLBSB/view?usp=drive_link" class="card" target="_blank" rel="noopener noreferrer">
+        <div class="card-title" data-depth="-1">Mac</div>
+    </a>
+    <a href="https://drive.google.com/file/d/1e60FkstBjT-NRZ2AihY25WmaQtGdIUAR/view?usp=drive_link" class="card" target="_blank" rel="noopener noreferrer">
+        <div class="card-title" data-depth="-1">ANDROID</div>
+    </a>
+</div>
+
+<br><br>
+
+<h2 class="section-title">Послушать Саундтреки:</h2>
+
+<div class="players">
+    <div class="player">
+        <div class="track-title" data-depth="-1">Forest meeting</div>
+        <audio id="track1" src="../assets/audio/music1.mp3"></audio>
+        <div class="player-controls" data-depth="1">
+            <button id="play1">PLAY</button>
+            <button id="pause1">STOP</button>
+            <input type="range" id="seek1" value="0">
+        </div>
+    </div>
+
+    <div class="player">
+        <div class="track-title" data-depth="-1">Forest meeting (remake)</div>
+        <audio id="track2" src="../assets/audio/music2.m4a"></audio>
+        <div class="player-controls" data-depth="1">
+            <button id="play2">PLAY</button>
+            <button id="pause2">STOP</button>
+            <input type="range" id="seek2" value="0">
+        </div>
+    </div>
+
+    <div class="player">
+        <div class="track-title" data-depth="-1">NICE DAY TO DISAPPEAR</div>
+        <audio id="track3" src="../assets/audio/music3.m4a"></audio>
+        <div class="player-controls" data-depth="1">
+            <button id="play3">PLAY</button>
+            <button id="pause3">STOP</button>
+            <input type="range" id="seek3" value="0">
+        </div>
+    </div>
+
+    <div class="player">
+        <div class="track-title" data-depth="-1">Burn the forest (remastered)</div>
+        <audio id="track4" src="../assets/audio/music4.m4a"></audio>
+        <div class="player-controls" data-depth="1">
+            <button id="play4">PLAY</button>
+            <button id="pause4">STOP</button>
+            <input type="range" id="seek4" value="0">
+        </div>
+    </div>
+
+    <div class="player">
+        <div class="track-title" data-depth="-1">CRACKED DESCENT</div>
+        <audio id="track5" src="../assets/audio/music5.m4a"></audio>
+        <div class="player-controls" data-depth="1">
+            <button id="play5">PLAY</button>
+            <button id="pause5">STOP</button>
+            <input type="range" id="seek5" value="0">
+        </div>
+    </div>
+
+    <div class="player">
+        <div class="track-title" data-depth="-1">Have a nice day!</div>
+        <audio id="track6" src="../assets/audio/music6.m4a"></audio>
+        <div class="player-controls" data-depth="1">
+            <button id="play6">PLAY</button>
+            <button id="pause6">STOP</button>
+            <input type="range" id="seek6" value="0">
+        </div>
+    </div>
+</div>
+
+<script>
+function initPlayer(num) {
+    const audio = document.getElementById(`track${num}`);
+    const playBtn = document.getElementById(`play${num}`);
+    const pauseBtn = document.getElementById(`pause${num}`);
+    const seek = document.getElementById(`seek${num}`);
+
+    playBtn.onclick = () => audio.play();
+    pauseBtn.onclick = () => audio.pause();
+
+    audio.addEventListener('loadedmetadata', () => {
+        seek.max = audio.duration;
+    });
+
+    audio.addEventListener('timeupdate', () => {
+        seek.value = audio.currentTime;
+    });
+
+    seek.oninput = () => {
+        audio.currentTime = seek.value;
+    };
+}
+
+for (let i = 1; i <= 6; i++) {
+    initPlayer(i);
+}
+</script>
+</div>
+<script src="../assets/js/site.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Магазин KUBBY GAMES</title>
+<link rel="icon" href="../assets/images/icon.svg" type="image/svg+xml">
+<script>
+document.documentElement.classList.add('page-transitions-enabled');
+</script>
+
+<style>
+@font-face {
+    font-family: 'KBF';
+    src: url('../assets/fonts/Kbf Ru.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'KBF';
+    src: url('../assets/fonts/Kbf En.ttf') format('truetype');
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'KBF', sans-serif;
+}
+
+html {
+    min-height: 100%;
+    background: #000;
+}
+
+@keyframes moveBG {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 100%; }
+}
+
+body {
+    min-height: 100vh;
+    position: relative;
+    isolation: isolate;
+    overflow-x: hidden;
+    background: #000;
+    color: #fff;
+    padding: 40px 20px 56px;
+    background-image: url("../assets/images/bbg.png");
+    background-repeat: repeat;
+    background-size: 100px;
+    animation: moveBG 30s ease-in-out infinite alternate;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 999;
+    transition: opacity 0.55s ease;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.95));
+    pointer-events: none;
+    z-index: 0;
+}
+
+.page-shell {
+    position: relative;
+    z-index: 1;
+}
+
+html.page-transitions-enabled body::before {
+    opacity: 1;
+}
+
+html.page-transitions-enabled body .page-shell {
+    opacity: 0;
+    transform: translateY(18px) scale(0.988);
+    transition: opacity 0.5s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html.page-transitions-enabled body.page-ready .page-shell {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+html.page-transitions-enabled body.page-ready::before {
+    opacity: 0;
+}
+
+html.page-transitions-enabled body.page-leaving .page-shell {
+    opacity: 0;
+    transform: translateY(18px) scale(0.988);
+    pointer-events: none;
+}
+
+html.page-transitions-enabled body.page-leaving::before {
+    opacity: 1;
+}
+
+.nav {
+    max-width: 1100px;
+    margin: 0 auto 30px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.nav a {
+    position: relative;
+    --ui-shift-x: 0px;
+    --ui-shift-y: 0px;
+    --ui-rotate-x: 0deg;
+    --ui-rotate-y: 0deg;
+    --ui-scale: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 180px;
+    color: #fff;
+    text-decoration: none;
+    padding: 12px 18px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.08);
+    border: 2px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(4px);
+    transform-style: preserve-3d;
+    will-change: transform;
+    transform:
+        perspective(900px)
+        translate3d(var(--ui-shift-x), var(--ui-shift-y), 0)
+        rotateX(var(--ui-rotate-x))
+        rotateY(var(--ui-rotate-y))
+        scale(var(--ui-scale));
+    transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.nav a::after {
+    content: "";
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 6px;
+    height: 14px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0) 74%);
+    opacity: 0.28;
+    transform: translateY(8px) scale(0.9);
+    filter: blur(10px);
+    pointer-events: none;
+    transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.nav a:hover,
+.nav a.is-ui-hovered {
+    background: rgba(255,255,255,0.16);
+    border-color: rgba(255,255,255,0.42);
+    box-shadow: 0 16px 28px rgba(0,0,0,0.28);
+}
+
+.nav a:hover::after,
+.nav a.is-ui-hovered::after {
+    opacity: 0.44;
+    transform: translateY(10px) scale(1);
+}
+
+.nav-link-label {
+    display: inline-block;
+    transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), -10px);
+    transition: transform 0.22s ease, letter-spacing 0.22s ease;
+}
+
+.nav a:hover .nav-link-label,
+.nav a.is-ui-hovered .nav-link-label {
+    transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), -10px) translateY(-1px);
+    letter-spacing: 1px;
+}
+
+.hero {
+    max-width: 900px;
+    margin: 0 auto 28px;
+    text-align: center;
+}
+
+.logo {
+    display: block;
+    margin: 0 auto 20px;
+    width: 100%;
+    max-width: 380px;
+    transition: transform 0.35s ease, filter 0.35s ease;
+}
+
+.logo:hover {
+    transform: translateY(-4px) scale(1.02);
+    filter: drop-shadow(0 0 18px rgba(255,255,255,0.28));
+}
+
+.title {
+    font-size: 40px;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+[data-depth] {
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+.info {
+    max-width: 760px;
+    margin: 0 auto 18px;
+    padding: 16px 20px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.08);
+    border: 2px solid rgba(255,255,255,0.16);
+    line-height: 1.5;
+    font-size: 19px;
+}
+
+.currency-panel {
+    --ui-shift-x: 0px;
+    --ui-shift-y: 0px;
+    --ui-rotate-x: 0deg;
+    --ui-rotate-y: 0deg;
+    --ui-scale: 1;
+    position: relative;
+    max-width: 340px;
+    margin: 0 auto 34px;
+    transform-style: preserve-3d;
+    will-change: transform;
+    transform:
+        perspective(900px)
+        translate3d(var(--ui-shift-x), var(--ui-shift-y), 0)
+        rotateX(var(--ui-rotate-x))
+        rotateY(var(--ui-rotate-y))
+        scale(var(--ui-scale));
+    transition: filter 0.3s ease;
+}
+
+.currency-panel::after {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: -6px;
+    height: 16px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0) 74%);
+    opacity: 0.3;
+    transform: translateY(8px) scale(0.9);
+    filter: blur(10px);
+    pointer-events: none;
+    transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.currency-panel:hover::after,
+.currency-panel.is-ui-hovered::after {
+    opacity: 0.44;
+    transform: translateY(10px) scale(1);
+}
+
+.currency-label {
+    display: block;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 18px;
+    transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), -10px);
+}
+
+.currency-select {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 2px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    font-size: 18px;
+    outline: none;
+    transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), 10px);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.currency-select:hover,
+.currency-panel.is-ui-hovered .currency-select {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.42);
+    box-shadow: 0 16px 28px rgba(0,0,0,0.22);
+}
+
+.currency-select option {
+    color: #111;
+}
+
+.shop-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 22px;
+}
+
+.product-card {
+    --ui-shift-x: 0px;
+    --ui-shift-y: 0px;
+    --ui-rotate-x: 0deg;
+    --ui-rotate-y: 0deg;
+    --ui-scale: 1;
+    position: relative;
+    padding: 22px 20px 24px;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(6px);
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    overflow: hidden;
+    transform-style: preserve-3d;
+    will-change: transform;
+    transform:
+        perspective(900px)
+        translate3d(var(--ui-shift-x), var(--ui-shift-y), 0)
+        rotateX(var(--ui-rotate-x))
+        rotateY(var(--ui-rotate-y))
+        scale(var(--ui-scale));
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.product-card::after {
+    content: "";
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 10px;
+    height: 18px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(0,0,0,0.36) 0%, rgba(0,0,0,0) 74%);
+    opacity: 0.34;
+    transform: translateY(12px) scale(0.9);
+    filter: blur(12px);
+    pointer-events: none;
+    transition: opacity 0.24s ease, transform 0.24s ease;
+}
+
+.product-card::before {
+    content: "";
+    position: absolute;
+    inset: auto -20% -30% auto;
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(247,211,109,0.22) 0%, rgba(247,211,109,0) 70%);
+    opacity: 0;
+    transform: scale(0.7);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.product-card:hover,
+.product-card.is-ui-hovered {
+    border-color: rgba(255,255,255,0.42);
+    background: rgba(255,255,255,0.1);
+    box-shadow: 0 24px 46px rgba(0,0,0,0.38);
+}
+
+.product-card:hover::before,
+.product-card.is-ui-hovered::before {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.product-card:hover::after,
+.product-card.is-ui-hovered::after {
+    opacity: 0.5;
+    transform: translateY(14px) scale(1);
+}
+
+.product-visual {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: min(100%, 280px);
+    aspect-ratio: 1 / 1;
+    margin: 0 auto 18px;
+    border-radius: 32px;
+    border: 3px solid rgba(255,255,255,0.82);
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.22));
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+    overflow: hidden;
+    transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), 20px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    cursor: zoom-in;
+}
+
+.product-image {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 28px;
+    transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), 30px);
+    filter: drop-shadow(0 12px 22px rgba(0,0,0,0.45));
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.product-card:hover .product-visual,
+.product-card.is-ui-hovered .product-visual {
+    transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), 20px) rotate(-2deg) scale(1.02);
+    border-color: #f7d36d;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16), 0 18px 24px rgba(0,0,0,0.28);
+}
+
+.product-card:hover .product-image,
+.product-card.is-ui-hovered .product-image {
+    transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), 30px) scale(1.06) rotate(2deg);
+    filter: drop-shadow(0 16px 24px rgba(247,211,109,0.18));
+}
+
+.product-title {
+    position: relative;
+    z-index: 1;
+    font-size: 28px;
+    margin-bottom: 16px;
+    min-height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), -10px);
+    transition: transform 0.3s ease, letter-spacing 0.3s ease;
+}
+
+.product-card:hover .product-title,
+.product-card.is-ui-hovered .product-title {
+    transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), -10px) translateY(-2px);
+    letter-spacing: 1px;
+}
+
+.buy-button {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    min-width: 180px;
+    padding: 14px 20px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #f7d36d, #d88d2f);
+    color: #1b1204;
+    text-decoration: none;
+    font-size: 20px;
+    border: 2px solid rgba(255,255,255,0.28);
+    transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), 10px);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 12px 24px rgba(216,141,47,0.25);
+}
+
+.buy-button:hover {
+    transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), 10px) translateY(-3px);
+    box-shadow: 0 16px 30px rgba(216,141,47,0.38);
+}
+
+.shop-note {
+    max-width: 1100px;
+    margin: 28px auto 0;
+    text-align: center;
+    color: rgba(255,255,255,0.82);
+    font-size: 18px;
+}
+
+@media (max-width: 640px) {
+    body {
+        padding: 28px 16px 40px;
+    }
+
+    .title {
+        font-size: 32px;
+    }
+
+    .info {
+        font-size: 17px;
+    }
+
+    .product-title {
+        min-height: auto;
+        font-size: 24px;
+    }
+}
+</style>
+</head>
+<body>
+<div class="page-shell">
+
+<div class="nav">
+    <a href="../index.html"><span class="nav-link-label" data-depth="-1">Главная</span></a>
+</div>
+
+<section class="hero">
+    <img src="../assets/images/LogoIS.png" class="logo" alt="KUBBY GAMES">
+    <h1 class="title">Магазин мерча по вселенной кубби</h1>
+</section>
+
+<div class="currency-panel">
+    <label class="currency-label" for="currency-select" data-depth="-1">Выберите валюту</label>
+    <select class="currency-select" id="currency-select" data-depth="1">
+        <option value="RUB">Российский рубль</option>
+        <option value="BYN">Белорусский рубль</option>
+        <option value="KZT">Казахский тенге</option>
+        <option value="KGS">Кыргызский сом</option>
+        <option value="AMD">Армянский драм</option>
+        <option value="GEL">Грузинский лари</option>
+        <option value="UZS">Узбекский сум</option>
+        <option value="AZN">Азербайджанский манат</option>
+        <option value="AGC">Агроситийский спил</option>
+    </select>
+</div>
+
+<section class="shop-grid">
+    <article class="product-card" data-price-key="kubby">
+        <a class="product-visual" href="../assets/images/KUBBY.png" target="_blank" rel="noopener noreferrer" data-depth="2">
+            <img src="../assets/images/KUBBY.png" class="product-image" alt="Статуэтка Кубби" data-depth="3">
+        </a>
+        <h2 class="product-title" data-depth="2">Статуэтка Кубби</h2>
+        <a class="buy-button" href="https://t.me/Windowsplintus2011?text=Привет!%20хочу%20купить%20статуэтку%20Кубби." target="_blank" rel="noopener noreferrer" data-depth="2"><span>Купить за 500 RUB</span></a>
+    </article>
+
+    <article class="product-card" data-price-key="fakeKubby">
+        <a class="product-visual" href="../assets/images/FKUBBY.png" target="_blank" rel="noopener noreferrer" data-depth="2">
+            <img src="../assets/images/FKUBBY.png" class="product-image" alt="Статуэтка Фейк Кубби" data-depth="3">
+        </a>
+        <h2 class="product-title" data-depth="2">Статуэтка Фейк Кубби</h2>
+        <a class="buy-button" href="https://t.me/Windowsplintus2011?text=Привет!%20хочу%20купить%20статуэтку%20Фейк-Кубби." target="_blank" rel="noopener noreferrer" data-depth="2"><span>Купить за 500 RUB</span></a>
+    </article>
+
+    <article class="product-card" data-price-key="musicBox">
+        <a class="product-visual" href="../assets/images/FMmusic.png" target="_blank" rel="noopener noreferrer" data-depth="2">
+            <img src="../assets/images/FMmusic.png" class="product-image" alt="Музыкальная шкатулка Forest Meeting" data-depth="3">
+        </a>
+        <h2 class="product-title" data-depth="2">Музыкальная шкатулка Forest Meeting</h2>
+        <a class="buy-button" href="https://t.me/Windowsplintus2011?text=Привет!%20хочу%20купить%20музыкальную%20шкатулку%20Forest%20Meeting." target="_blank" rel="noopener noreferrer" data-depth="2"><span>Купить за 200 RUB</span></a>
+    </article>
+</section>
+
+<p class="shop-note">скоро будут ещё товары!<br>(Пока-что покупка товара идёт через создателя кубби)</p>
+
+<script>
+const currencySelect = document.getElementById('currency-select');
+const productCards = document.querySelectorAll('.product-card');
+
+const prices = {
+    RUB: { label: 'RUB', kubby: '500', fakeKubby: '500', musicBox: '200' },
+    BYN: { label: 'BYN', kubby: '19', fakeKubby: '19', musicBox: '7,5' },
+    KZT: { label: 'KZT', kubby: '3000', fakeKubby: '3000', musicBox: '1200' },
+    KGS: { label: 'KGS', kubby: '580', fakeKubby: '580', musicBox: '240' },
+    AMD: { label: 'AMD', kubby: '2500', fakeKubby: '2500', musicBox: '1000' },
+    GEL: { label: 'GEL', kubby: '18', fakeKubby: '18', musicBox: '7' },
+    UZS: { label: 'UZS', kubby: '80000', fakeKubby: '80000', musicBox: '32000' },
+    AZN: { label: 'AZN', kubby: '12', fakeKubby: '12', musicBox: '5' },
+    AGC: { label: 'AGR', kubby: '5000', fakeKubby: '5000', musicBox: '2000' }
+};
+
+function updatePrices() {
+    const selectedCurrency = prices[currencySelect.value];
+
+    productCards.forEach((card) => {
+        const key = card.dataset.priceKey;
+        const button = card.querySelector('.buy-button');
+        button.textContent = `Купить за ${selectedCurrency[key]} ${selectedCurrency.label}`;
+    });
+}
+
+currencySelect.addEventListener('change', updatePrices);
+updatePrices();
+
+</script>
+</div>
+<script src="../assets/js/site.js"></script>
+
+</body>
+</html>
